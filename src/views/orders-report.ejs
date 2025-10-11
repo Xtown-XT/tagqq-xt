@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Order Report</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: teal;
+            margin-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            page-break-inside: auto;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Order Report</h1>
+    <p>Date: <%= date %>
+    </p>
+    <p>Total Orders: <%= totalCount %>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Order Code</th>
+                <th>QR Ordered</th>
+                <!-- <th>QR Delivered</th> -->
+                <th>Ordered Date</th>
+                <th>Partner Type</th>
+                <th>Partner Name</th>
+                <th>Ordered By</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% orders.forEach(order=> { %>
+                <tr>
+                    <td>
+                        <%= order.order_code %>
+                    </td>
+                    <td>
+                        <%= order.total_qr %>
+                    </td>
+                    <!-- <td><%= order.delivered_qr %></td> -->
+                    <% const d=new Date(order.ordered_date); %>
+                        <td>
+                            <%= d.toLocaleString('en-US', { month: 'short' }) %>
+                                <%= ('0' + d.getDate()).slice(-2) %>
+                                    <%= d.getFullYear() %>
+                        </td>
+
+                        <td>
+                            <%= order.partner_type %>
+                        </td>
+                        <td>
+                            <%= order.partner_name %>
+                        </td>
+                        <td>
+                            <%= order.order_by %>
+                        </td>
+                        <td>
+                            <%= order.status %>
+                        </td>
+
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+</body>
+
+</html>

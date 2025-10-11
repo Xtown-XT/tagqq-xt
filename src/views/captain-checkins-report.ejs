@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Captain Attendance Summary</title>
+  <style>
+    body { font-family: sans-serif; }
+    h1 { color: teal; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 6px; font-size: 12px; text-align: center; }
+    th { background: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Captain Attendance Summary</h1>
+  <p>From: <%= fromDate %> To: <%= toDate %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Total Check-ins</th>
+        <th>Duration</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% records.forEach((record) => { %>
+        <tr>
+          <td><%= record.sNo %></td>
+          <td><%= record.name %></td>
+          <td><%= record.date %></td>
+          <td><%= record.totalCheckins %></td>
+          <td><%= record.duration %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

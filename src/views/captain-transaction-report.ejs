@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Captain Transactions Report</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    h1 {
+      color: teal;
+      margin-bottom: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      font-size: 12px;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Captain Transactions Report</h1>
+  <p>Date: <%= date %></p>
+  <p>Total Transactions: <%= totalCount %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Captain</th>
+        <th>User</th>
+        <th>Status</th>
+        <th>Points</th>
+        <th>Public_url_Id</th>
+        <!-- <th>Created At</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <% transactions.forEach(tx => { %>
+        <tr>
+          <td><%= tx.id %></td>
+          <td><%= tx.captain?.name || 'N/A' %></td>
+          <td><%= tx.user?.username || 'N/A' %></td>
+          <td><%= tx.status %></td>
+          <td><%= tx.points %></td>
+          <td><%= tx.public_url_id %></td>
+          <!-- <td><%= new Date(tx.created_at).toLocaleDateString() %></td> -->
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

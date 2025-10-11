@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Customer Document Report</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+
+        h1 {
+            color: teal;
+            margin-bottom: 10px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            page-break-inside: auto;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 12px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        img {
+            max-width: 60px;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Customer Document Report</h1>
+    <p>Date: <%= date %></p>
+    <p>Total Docs: <%= totalCount %></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Document Type</th>
+                <th>Document Name</th>
+                <th>MIME Type</th>
+                <th>File Size (KB)</th>
+                <th>User Name</th>
+                <th>Front Image</th>
+                <th>Back Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% docs.forEach(doc => { %>
+                <tr>
+                    <td><%= doc.doc_type %></td>
+                    <td><%= doc.doc_name %></td>
+                    <td><%= doc.mime_type %></td>
+                    <td><%= doc.file_size %></td>
+                    <td><%= doc.username %></td>
+                    <td>
+                        <% if (doc.preview_front) { %>
+                            <img src="<%= doc.preview_front %>" alt="Front">
+                        <% } else { %>
+                            N/A
+                        <% } %>
+                    </td>
+                    <td>
+                        <% if (doc.preview_back) { %>
+                            <img src="<%= doc.preview_back %>" alt="Back">
+                        <% } else { %>
+                            N/A
+                        <% } %>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+
+</html>

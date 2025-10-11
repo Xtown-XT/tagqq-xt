@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Captain Users Report</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      color: teal;
+      margin-bottom: 5px;
+    }
+
+    p {
+      font-size: 14px;
+      margin: 4px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      page-break-inside: auto;
+    }
+
+    thead {
+      background-color: #f5f5f5;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      font-size: 12px;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #eaeaea;
+    }
+
+    img {
+      height: 40px;
+      width: 40px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    tr {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Captain Users Report</h1>
+  <p>Date: <%= date %></p>
+  <p>Total Captains: <%= totalCount %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Emp ID</th>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% captains.forEach(captain => { %>
+        <tr>
+          <td><%= captain.emp_id || 'N/A' %></td>
+          <td>
+            <% if (captain.image) { %>
+              <img src="data:image/jpeg;base64,<%= captain.image %>" alt="Captain Image" />
+            <% } else { %>
+              N/A
+            <% } %>
+          </td>
+          <td><%= captain.name %></td>
+          <td><%= captain.email %></td>
+          <td><%= captain.phone %></td>
+          <td><%= captain.is_active ? 'Active' : 'Inactive' %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

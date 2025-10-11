@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Partner Report with Agents</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            color: teal;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 6px;
+            font-size: 10px;
+            word-wrap: break-word;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            text-align: left;
+            width: 25%;
+        }
+
+        .sub-header {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .divider {
+            border-top: 1px dashed #999;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Partner Report with Agents</h1>
+    <p>Date: <%= date %>
+    </p>
+    <p>Total Partners: <%= totalCount %>
+    </p>
+
+    <% partners.forEach(p=> { %>
+        <h3 class="sub-header">Partner: <%= p.name %>
+        </h3>
+        <table>
+            <tbody>
+                <tr>
+                    <th>Email</th>
+                    <td>
+                        <%= p.email %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Phone</th>
+                    <td>
+                        <%= p.phone %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <td>
+                        <%= p.partner_type %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        <%= p.is_active %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>
+                        <%- p.address %>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>GST IN</th>
+                    <td>
+                        <%= p.gst_in %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Udyog Aadhar</th>
+                    <td>
+                        <%= p.udyog_aadhar %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>RC</th>
+                    <td>
+                        <%= p.rc %>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <% if (p.agents.length> 0) { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="4" class="sub-header">Agents for <%= p.name %>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Agent Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% p.agents.forEach(agent=> { %>
+                        <tr>
+                            <td>
+                                <%= agent.name %>
+                            </td>
+                            <td>
+                                <%= agent.email %>
+                            </td>
+                            <td>
+                                <%= agent.phone %>
+                            </td>
+                            <td>
+                                <%= agent.role %>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+            <% } else { %>
+                <p><i>No agents found for this partner.</i></p>
+                <% } %>
+
+                    <div class="divider"></div>
+                    <% }) %>
+</body>
+
+</html>

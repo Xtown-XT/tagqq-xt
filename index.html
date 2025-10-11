@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Razorpay</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+  <h1>Test Razorpay Payment</h1>
+  <button id="rzp-button">Pay ₹500</button>
+
+  <div id="payment-response" style="margin-top: 20px; font-family: monospace; background: #f3f3f3; padding: 10px; display: none;"></div>
+
+  <script>
+    document.getElementById('rzp-button').onclick = function (e) {
+      const options = {
+        key: "rzp_test_eMic8CRvCtMHHj",
+        amount: 100,
+        currency: "INR",
+        name: "XTown Technologies",
+        description: "Test Payment",
+        order_id: "order_Qu8KEBNQmOSe5f",
+        handler: function (response) {
+          const resContainer = document.getElementById('payment-response');
+          resContainer.style.display = 'block';
+          resContainer.innerHTML = `
+            <strong>Payment Successful!</strong><br><br>
+            <b>Payment ID:</b> ${response.razorpay_payment_id}<br>
+            <b>Order ID:</b> ${response.razorpay_order_id}<br>
+            <b>Signature:</b> ${response.razorpay_signature}<br>
+          `;
+        },
+        prefill: {
+          name: "Leo Das",
+          email: "gnanaparthiban9655@gmail.com",
+          contact: "6369486726"
+        },
+        theme: {
+          color: "#3399cc"
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+      e.preventDefault();
+    };
+  </script>
+</body>
+</html>
+

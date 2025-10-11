@@ -1,0 +1,72 @@
+      <!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Users Report</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      color: teal;
+      margin-bottom: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      page-break-inside: auto;
+    }
+
+    tr {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+
+    thead {
+      display: table-header-group;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Users Report</h1>
+  <p>Date: <%= date %></p>
+  <p>Total Admins: <%= totalCount %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Role</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% admins.forEach(admin => { %>
+        <tr>
+          <td><%= admin.username %></td>
+          <td><%= admin.email %></td>
+          <td><%= admin.phone %></td>
+          <td><%= admin.role %></td>
+          <td><%= admin.status %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

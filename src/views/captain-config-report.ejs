@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Captain Config Report</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      color: teal;
+      margin-bottom: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      page-break-inside: auto;
+    }
+
+    tr {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+
+    thead {
+      display: table-header-group;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Captain Config Report</h1>
+  <p>Date: <%= date %></p>
+  <p>Total Configs: <%= totalCount %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Target</th>
+        <th>Point/Sale</th>
+        <th>Point/Rupee</th>
+        <th>Bonus %</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Status</th>
+        <!-- <th>Created By</th>
+        <th>Created At</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <% configs.forEach(config => { %>
+        <tr>
+          <td><%= config.target %></td>
+          <td><%= config.point_per_sale %></td>
+          <td><%= config.point_per_rupee %></td>
+          <td><%= config.bonus_percent %></td>
+          <td><%= config.start_date ? config.start_date.toISOString().split('T')[0] : '' %></td>
+          <td><%= config.end_date ? config.end_date.toISOString().split('T')[0] : '' %></td>
+          <td><%= config.status %></td>
+          <!-- <td><%= config.creator?.admin_username || 'N/A' %></td>
+          <td><%= new Date(config.createdAt).toLocaleDateString() %></td> -->
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

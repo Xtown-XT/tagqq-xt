@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blood Donor Report</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    h2 { text-align: center; color: teal; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h2>Blood Donor Report</h2>
+  <p>Date: <%= date %></p>
+  <p>Total Donors: <%= totalCount %></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Mobile</th>
+        <th>Blood Group</th>
+        <th>District</th>
+        <th>Status</th>
+        <th>City</th>
+        <th>Is_available</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% donors.forEach(d => { %>
+        <tr>
+          <td><%= d.name %></td>
+          <td><%= d.mobile_no %></td>
+          <td><%= d.blood_group %></td>
+          <td><%= d.district %></td>
+          <td><%= d.status %></td>
+          <td><%= d.city %></td>
+          <td><%= d.is_available %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>

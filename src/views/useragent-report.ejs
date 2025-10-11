@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Agent Report</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: teal;
+            margin-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            page-break-inside: auto;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Agent Report</h1>
+    <p>Date: <%= date %></p>
+    <p>Total Agents: <%= totalCount %></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Partner Name</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% agents.forEach(agent => { %>
+            <tr>
+                <td><%= agent.name %></td>
+                <td><%= agent.email %></td>
+                <td><%= agent.phone %></td>
+                <td><%= agent.name %></td>
+                <td><%= agent.is_active ? 'Active' : 'Inactive' %></td>
+            </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

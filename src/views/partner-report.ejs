@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Partner Report</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: teal;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      margin: 0 0 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    thead {
+      background-color: #f0f0f0;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      font-size: 10px;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>Partner Report</h1>
+  <p>Date: <%= date %></p>
+  <p>Total Partners: <%= totalCount %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Address</th>
+        <!-- <th>Address2</th>
+        <th>State</th>
+        <th>District</th>
+        <th>Country</th>
+        <th>Pincode</th> -->
+        <th>GST IN</th>
+        <th>Udyog Aadhar</th>
+        <th>RC</th>
+        <!-- <th>Agents</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <% partners.forEach(p => { %>
+        <tr>
+          <td><%= p.name %></td>
+          <td><%= p.email %></td>
+          <td><%= p.phone %></td>
+          <td><%= p.partner_type %></td>
+          <td><%= p.is_active %></td>
+          <td>
+            <%= p.address1 %><br />
+            <%= p.address2 %><br />
+            <%= p.district %> - <%= p.pincode %><br />
+            <%= p.state %>, <%= p.country %>
+          </td>
+
+          <td><%= p.gst_in %></td>
+          <td><%= p.udyog_aadhar %></td>
+          <td><%= p.rc %></td>
+          <!-- <td><%= p.agents %></td> -->
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

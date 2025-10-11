@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Partner Report</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    h1 { color: teal; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      font-size: 10px;
+      word-wrap: break-word;
+    }
+    th { background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Partner Report</h1>
+  <p>Date: <%= date %></p>
+  <p>Total Partners: <%= totalCount %></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Address</th>
+        <th>GST IN</th>
+        <th>Udyog Aadhar</th>
+        <th>RC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% partners.forEach(p => { %>
+        <tr>
+          <td><%= p.name %></td>
+          <td><%= p.email %></td>
+          <td><%= p.phone %></td>
+          <td><%= p.partner_type %></td>
+          <td><%= p.is_active %></td>
+          <td><%- p.address %></td>
+          <td><%= p.gst_in %></td>
+          <td><%= p.udyog_aadhar %></td>
+          <td><%= p.rc %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>
