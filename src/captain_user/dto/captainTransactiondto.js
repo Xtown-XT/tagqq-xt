@@ -12,7 +12,7 @@ export const createCaptainTransactionSchema = z.object({
 });
 
 export const createCaptainTransactionControllerSchema = z.object({
-//   captain_id: z.string().uuid({ message: "Invalid captain ID" }),
+  //   captain_id: z.string().uuid({ message: "Invalid captain ID" }),
   user_id: z.string().uuid({ message: "Invalid user ID" }),
   public_url_id: z.string().uuid({ message: "Invalid public URL ID" }),
   points: z.number().int().min(0, { message: "Points must be non-negative" }),
@@ -37,8 +37,8 @@ export const updateCaptainTransactionSchema = z.object({
 });
 
 export const updateCaptainTransactionControllerSchema = z.object({
-//   id: z.string().uuid({ message: "Invalid transaction ID" }),
-//   captain_id: z.string().uuid().optional(),
+  //   id: z.string().uuid({ message: "Invalid transaction ID" }),
+  //   captain_id: z.string().uuid().optional(),
   user_id: z.string().uuid().optional(),
   public_url_id: z.string().uuid().optional(),
   points: z.number().int().min(0).optional(),
@@ -63,9 +63,9 @@ export const getCaptainTransactionListSchema = z.object({
   order: z.enum(["asc", "desc"]).optional().default("desc"),
   captain_id: z.string().uuid().optional(),
   user_id: z.string().uuid().optional(),
-  is_master:z.string().optional(),
-  export:z.string().optional()
-  
+  is_master: z.string().optional(),
+  export: z.string().optional()
+
 });
 
 export const getCaptainTransactionListControllerSchema = z.object({
@@ -77,7 +77,7 @@ export const getCaptainTransactionListControllerSchema = z.object({
   endDate: z.coerce.date().optional(),
   sort_by: z.string().optional(), // e.g., created_at, points
   order: z.enum(["asc", "desc"]).optional().default("desc"),
-//   captain_id: z.string().uuid().optional(),
+  //   captain_id: z.string().uuid().optional(),
   user_id: z.string().uuid().optional(),
 });
 

@@ -97,9 +97,6 @@ export const registerUser = async (req, res) => {
 };
 
 
-
-
-
 export const registerUserwithouturl = async (req, res) => {
   const { username, email, password, phone } = req.body;
   try {

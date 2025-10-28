@@ -16,7 +16,7 @@ class APIkeyService {
     }
   }
 
-  // Get all API keys with limit, offset, and optional search
+
   // Get all API keys with limit, page, and optional search
 async getAllAPIkeys({ limit = 10, page = 1, search = "" }) {
   try {

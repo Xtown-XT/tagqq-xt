@@ -34,7 +34,7 @@ const CaptainTransaction = sequelize.define('CaptainTransaction', {
     defaultValue: 'not_yet_redeemed',
     comment: 'Redemption status',
   },
-  
+
   amount: {
     type: DataTypes.FLOAT,
     allowNull: false,
@@ -44,7 +44,7 @@ const CaptainTransaction = sequelize.define('CaptainTransaction', {
   timestamps: true,
   underscored: true,
   paranoid: true,
-  deletedAt: 'deleted_at', 
+  deletedAt: 'deleted_at',
 });
 
 export default CaptainTransaction;

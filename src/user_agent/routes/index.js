@@ -12,11 +12,6 @@ const router = express.Router();
 
 router.use('/useragent', useragentRoutes);
 router.use('/useragent', ordersRoutes);
-
-
-
-
-
 router.use('/useragent',partnerRoutes)
 
 export default router;

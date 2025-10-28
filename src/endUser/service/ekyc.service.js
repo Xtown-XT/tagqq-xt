@@ -3,7 +3,7 @@ import axios from 'axios';
 import ApiKey from '../../thridPartyAPI/models/apiKeys.models.js';
 import Publicurl from '../models/public_url.model.js';
 import Profile from '../models/profile.models.js';
-import { Sequelize } from 'sequelize';
+import { Sequelize,Op } from 'sequelize';
 const { literal, where } = Sequelize;
 
 
@@ -73,7 +73,7 @@ class QuickEKYCService {
         '/aadhaar-v2/generate-otp',
         { key, id_number }
       );
-      
+
       return response.data; // e.g. { status: 'success', request_id: 12345 }
     } catch (err) {
       // Make sure _handleError either throws or returns a usable error
@@ -127,73 +127,73 @@ class QuickEKYCService {
 
 
   async fetchRcFull({ key, id_number, user_id, created_by, owner_name }) {
-  // 1) Validate input
-  if (!id_number) {
-    const err = new Error('id_number is required for fetchRcFull');
-    err.status = 400;
-    throw err;
-  }
+    // 1) Validate input
+    if (!id_number) {
+      const err = new Error('id_number is required for fetchRcFull');
+      err.status = 400;
+      throw err;
+    }
 
-  // 🔹 Check how many RCs this user already has
-  const rcCount = await Profile.count({
-    where: { user_id, docs_name: 'RC' },
-  });
-
-  // 🔹 If not the first RC, enforce QR check
-  if (rcCount > 0) {
-    const currentUserQr = await Publicurl.findOne({
-      where: { user_id },
+    // 🔹 Check how many RCs this user already has
+    const rcCount = await Profile.count({
+      where: { user_id, docs_name: 'RC' },
     });
 
-    if (!currentUserQr) {
-      const err = new Error('You do not have a QR. Please generate or activate your QR to add more RCs.');
-      err.status = 403;
-      throw err;
+    // 🔹 If not the first RC, enforce QR check
+    if (rcCount > 0) {
+      const currentUserQr = await Publicurl.findOne({
+        where: { user_id },
+      });
+
+      if (!currentUserQr) {
+        const err = new Error('You do not have a QR. Please generate or activate your QR to add more RCs.');
+        err.status = 403;
+        throw err;
+      }
+
+      if (!['Paid', 'Active'].includes(currentUserQr.status) || !currentUserQr.is_active) {
+        const err = new Error('Your QR is inactive or unpaid. Please activate your QR to add more RCs.');
+        err.status = 403;
+        throw err;
+      }
     }
 
-    if (!['Paid', 'Active'].includes(currentUserQr.status) || !currentUserQr.is_active) {
-      const err = new Error('Your QR is inactive or unpaid. Please activate your QR to add more RCs.');
-      err.status = 403;
-      throw err;
-    }
-  }
-
-  // 2) Prevent duplicate RC entries
-  const existing = await Profile.findOne({
-    where: { id_number, docs_name: 'RC' },
-  });
-
-  if (existing) {
-    const ownerUserId = existing.user_id;
-    const isSameUser = ownerUserId === user_id;
-
-    // Check QR status for the user who already added this RC
-    const ownerQr = await Publicurl.findOne({
-      where: {
-        user_id: ownerUserId,
-        status: { [Op.in]: ['Paid', 'Active'] },
-        is_active: true,
-      },
+    // 2) Prevent duplicate RC entries
+    const existing = await Profile.findOne({
+      where: { id_number, docs_name: 'RC' },
     });
 
-    if (!ownerQr) {
-      const err = new Error(
-        isSameUser
-          ? 'You have already stored this vehicle. Please activate your QR to store a new RC.'
-          : `This vehicle was already stored by another user (${ownerUserId}). Please ensure their QR is active.`
-      );
-      err.status = 409;
-      err.data = {
-        alreadyExists: true,
-        ownerUserId,
-        data: existing.data,
-        requiresQrActivation: true,
-      };
-      throw err;
-    }
+    if (existing) {
+      const ownerUserId = existing.user_id;
+      const isSameUser = ownerUserId === user_id;
 
-    console.log('Existing RC found, but QR is valid. Proceeding...');
-  }
+      // Check QR status for the user who already added this RC
+      const ownerQr = await Publicurl.findOne({
+        where: {
+          user_id: ownerUserId,
+          status: { [Op.in]: ['Paid', 'Active'] },
+          is_active: true,
+        },
+      });
+
+      if (!ownerQr) {
+        const err = new Error(
+          isSameUser
+            ? 'You have already stored this vehicle. Please activate your QR to store a new RC.'
+            : `This vehicle was already stored by another user (${ownerUserId}). Please ensure their QR is active.`
+        );
+        err.status = 409;
+        err.data = {
+          alreadyExists: true,
+          ownerUserId,
+          data: existing.data,
+          requiresQrActivation: true,
+        };
+        throw err;
+      }
+
+      console.log('Existing RC found, but QR is valid. Proceeding...');
+    }
 
     // 3) Ensure API key
     const apiKey = key ?? await this._getKeyForClient();
@@ -218,9 +218,29 @@ class QuickEKYCService {
       return this._handleError(err, 'rc-full');
     }
 
+      // 5️⃣ Check API returned valid data
+  if (!rcData || rcData.status_code !== 200 || !rcData.data) {
+    const err = new Error(`QuickEkyc RC fetch failed: ${rcData?.message || 'No data returned'}`);
+    err.status = 500;
+    throw err;
+  }
+
     // 5) Owner name validation
-    const fetchedOwner = String(rcData.data.owner_name || '').trim().toLowerCase();
-    const providedOwner = String(owner_name || '').trim().toLowerCase();
+    // const fetchedOwner = String(rcData.data.owner_name || '').trim().toLowerCase();
+    // const providedOwner = String(owner_name || '').trim().toLowerCase();
+
+    const normalizeName = (str = '') =>
+      str
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, '') // remove all punctuation and special chars
+        .replace(/\s+/g, ' ')        // collapse multiple spaces
+        .trim();
+
+    const fetchedOwner = normalizeName(rcData.data.owner_name);
+    const providedOwner = normalizeName(owner_name);
+
+    console.log('🧩 Normalized owner names:', { fetchedOwner, providedOwner });
+
     if (fetchedOwner !== providedOwner) {
       const err = new Error(
         `Owner name mismatch: expected "${rcData.data.owner_name}", got "${owner_name}"`

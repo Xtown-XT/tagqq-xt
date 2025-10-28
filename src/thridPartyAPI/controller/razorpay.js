@@ -32,9 +32,8 @@ class PaymentController {
 
       const qrRecord = await Publicurl.findOne({
         where: { id: qrid, status: "Not Paid", user_id: null },
-
-
       });
+      
       if (!qrRecord) {
         return res.sendError("This QR is not available for Active", 400);
       }

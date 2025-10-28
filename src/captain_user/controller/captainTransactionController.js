@@ -70,21 +70,21 @@ const CaptainTransactionController = {
 
 
     // Today's withdraw details for a captain
-async getTodayWithdraw(req, res) {
-    try {
-        const user = req.admin || req.captain; // ✅ Extract user from JWT middleware
-        const { captain_id } = req.query; // ✅ Change to query param (optional for admin)
+    async getTodayWithdraw(req, res) {
+        try {
+            const user = req.admin || req.captain; // ✅ Extract user from JWT middleware
+            const { captain_id } = req.query; // ✅ Change to query param (optional for admin)
 
-        const result = await CaptainTransactionService.getTodayWithdraw(user, captain_id);
-        return res.status(200).json({
-            message: 'Today withdraw details fetched successfully',
-            data: result,
-        });
-    } catch (error) {
-        console.error('Error fetching withdraw details:', error);
-        return res.status(500).json({ error: error.message || 'Internal Server Error' });
-    }
-},
+            const result = await CaptainTransactionService.getTodayWithdraw(user, captain_id);
+            return res.status(200).json({
+                message: 'Today withdraw details fetched successfully',
+                data: result,
+            });
+        } catch (error) {
+            console.error('Error fetching withdraw details:', error);
+            return res.status(500).json({ error: error.message || 'Internal Server Error' });
+        }
+    },
 
 
     // Get one by ID

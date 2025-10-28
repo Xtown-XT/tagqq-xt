@@ -3,6 +3,7 @@ import razorpayRouter from "./razorpay.js";
 import smtpRouter from "./smtp.routes.js";
 import twilloRouter from "./twilio.routes.js"
 import phonepeRouter from "./phonepe.routes.js";
+import CpassRouter from "./cpass.routes.js"
 import { Router } from "express";
 
 
@@ -17,6 +18,7 @@ router.use("/thirdpartyapi", razorpayRouter);
 router.use("/thirdpartyapi", smtpRouter);
 router.use("/thirdpartyapi", twilloRouter);
 router.use("/thirdpartyapi", phonepeRouter);
+router.use("/thirdpartyapi", CpassRouter);
 
 
 

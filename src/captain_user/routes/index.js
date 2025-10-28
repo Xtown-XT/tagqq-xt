@@ -7,6 +7,7 @@ import captain_attendance from "./captain_checkins.routes.js";
 import CaptainTransaction from './captainTransactionRoutes.js';
 import CaptainWithdrawTransaction from './captain_withdraw.routes.js';
 import CaptainEnhancement from './captain_suggestion.routes.js';
+import earningsRoutes from './captain_earnings.routes.js'
 
 
 
@@ -19,6 +20,7 @@ router.use('/captain', captain_attendance);
 router.use('/captain', CaptainTransaction);
 router.use('/captain', CaptainWithdrawTransaction);
 router.use('/captain', CaptainEnhancement);
+router.use('/captain', earningsRoutes);
 
 
 export default router;

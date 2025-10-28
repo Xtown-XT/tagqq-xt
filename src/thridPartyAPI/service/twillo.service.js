@@ -248,13 +248,7 @@ class TwilioService {
   }
 }
 
-
-
-
-
-
 }
-
 
 
 const twilioService = new TwilioService();
@@ -269,6 +263,7 @@ const twilioService = new TwilioService();
 })();
 
 export default twilioService;
+
 
 // // Optional test runner
 // (async () => {

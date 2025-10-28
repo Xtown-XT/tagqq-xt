@@ -6,14 +6,14 @@ import {
   updatePartnerSchema,
   partnerIdSchema,
 } from '../dto/partner.dto.js';
-import {  authenticate } from '../../middleware/index.js';
+import { authenticate } from '../../middleware/index.js';
 
 const router = express.Router();
 
 // CREATE Partner
 router.post(
   '/partner',
-   authenticate(['admin']),
+  authenticate(['admin']),
   validate(createPartnerSchema),
   partnerController.create
 );
@@ -21,21 +21,21 @@ router.post(
 // LIST Partners
 router.get(
   '/partner',
-   authenticate(['admin', 'user_agent']),
-//   validate(listPartnersSchema),
+  authenticate(['admin', 'user_agent']),
+  //   validate(listPartnersSchema),
   partnerController.list
 );
 
 //Get Partner Types
-router.get('/partner/types', 
-   authenticate(['admin', 'user_agent']),
-   partnerController.getPartnerTypes);
+router.get('/partner/types',
+  authenticate(['admin', 'user_agent']),
+  partnerController.getPartnerTypes);
 
-   
+
 // GET Partner BY ID
 router.get(
   '/partner/:id',
-   authenticate(['admin', 'user_agent']),
+  authenticate(['admin', 'user_agent']),
   validate(partnerIdSchema),
   partnerController.getById
 );
@@ -44,7 +44,7 @@ router.get(
 // UPDATE Partner
 router.put(
   '/partner/:id',
-   authenticate(['admin', 'user_agent']),
+  authenticate(['admin', 'user_agent']),
   validate({ ...partnerIdSchema, ...updatePartnerSchema }),
   partnerController.update
 );
@@ -52,7 +52,7 @@ router.put(
 // DELETE Partner BY ID
 router.delete(
   '/partner/:id',
-   authenticate(['admin', 'user_agent']),
+  authenticate(['admin', 'user_agent']),
   validate(partnerIdSchema),
   partnerController.remove
 );
@@ -60,15 +60,15 @@ router.delete(
 // BULK DELETE Partners
 router.delete(
   '/partner',
-   authenticate(['admin', 'user_agent']),
-//   validate(listPartnersSchema),
+  authenticate(['admin', 'user_agent']),
+  //   validate(listPartnersSchema),
   partnerController.bulkRemove
 );
 
 // RESTORE Partner BY ID
 router.patch(
   '/partner/:id/restore',
-   authenticate(['admin', 'user_agent']),
+  authenticate(['admin', 'user_agent']),
   validate(partnerIdSchema),
   partnerController.restoreById
 );
@@ -76,8 +76,8 @@ router.patch(
 // BULK RESTORE Partners
 router.patch(
   '/partner/restore',
-   authenticate(['admin', 'user_agent']),
-//   validate(listPartnersSchema),
+  authenticate(['admin', 'user_agent']),
+  //   validate(listPartnersSchema),
   partnerController.bulkRestore
 );
 

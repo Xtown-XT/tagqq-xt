@@ -411,11 +411,83 @@ export async function getOrders({
 
 
   const orderClause = [[orderBy, order.toUpperCase()]];
-  const offset = page && limit ? (page - 1) * limit : undefined;
-  const limitVal = page && limit ? limit : undefined;
+  // const offset = page && limit ? (page - 1) * limit : undefined;
+  // const limitVal = page && limit ? limit : undefined;
+    const pageNum = Number(page) || 1;
+  const limitNum = Number(limit) || 10;
+  const offset = (pageNum - 1) * limitNum;
+
+//   try {
+//     // 7. Master can fetch all rows without pagination
+//     if (is_master) {
+//       const rows = await Orders.findAll({
+//         where,
+//         order: orderClause,
+//         include,
+//         distinct: true,
+//       });
+
+//       const count = await Orders.count({
+//         where,
+//         distinct: true,
+//         col: 'id',
+//         include: [
+//           {
+//             model: Partner,
+//             as: 'partner',
+//           },
+//           {
+//             model: User_Agent,
+//             as: 'user_agent',
+//           },
+//         ],
+//       });
+
+//       return { rows, count };
+//     }
+
+
+//     // 8. Others get paginated results
+//     // 1. Get actual rows (with full includes like public_urls)
+//     const rows = await Orders.findAll({
+//       // subQuery: false,
+//       where,
+//       offset,
+//       limit: limitVal,
+//       order: orderClause,
+//       include,
+//       distinct: true,
+//     });
+
+//     // 2. Count distinct Orders by ID (exclude hasMany to prevent duplication)
+//     const count = await Orders.count({
+//       where,
+//       distinct: true,
+//       col: 'id', // use the correct table alias if needed
+//       include: [
+//         {
+//           model: Partner,
+//           as: 'partner',
+//         },
+//         {
+//           model: User_Agent,
+//           as: 'user_agent',
+//         },
+//         //  Do not include `public_urls` here to avoid inflated count
+//       ]
+//     });
+
+//     return { rows, count };
+
+//   } catch (err) {
+//     console.error('Sequelize error in getOrders():', err);
+//     throw err;
+//   }
+// }
+
 
   try {
-    // 7. Master can fetch all rows without pagination
+    // 9️⃣ Master fetch (no pagination)
     if (is_master) {
       const rows = await Orders.findAll({
         where,
@@ -423,61 +495,33 @@ export async function getOrders({
         include,
         distinct: true,
       });
-
-      const count = await Orders.count({
-        where,
-        distinct: true,
-        col: 'id',
-        include: [
-          {
-            model: Partner,
-            as: 'partner',
-          },
-          {
-            model: User_Agent,
-            as: 'user_agent',
-          },
-        ],
-      });
-
+      const count = await Orders.count({ where, distinct: true, col: 'id' });
       return { rows, count };
     }
 
-
-    // 8. Others get paginated results
-    // 1. Get actual rows (with full includes like public_urls)
+    // 🔟 Paginated fetch
     const rows = await Orders.findAll({
-      // subQuery: false,
       where,
       offset,
-      limit: limitVal,
+      limit: limitNum,
       order: orderClause,
       include,
       distinct: true,
     });
 
-    // 2. Count distinct Orders by ID (exclude hasMany to prevent duplication)
     const count = await Orders.count({
       where,
       distinct: true,
-      col: 'id', // use the correct table alias if needed
+      col: 'id',
       include: [
-        {
-          model: Partner,
-          as: 'partner',
-        },
-        {
-          model: User_Agent,
-          as: 'user_agent',
-        },
-        //  Do not include `public_urls` here to avoid inflated count
-      ]
+        { model: Partner, as: 'partner' },
+        { model: User_Agent, as: 'user_agent' },
+      ],
     });
 
     return { rows, count };
-
   } catch (err) {
-    console.error('Sequelize error in getOrders():', err);
+    console.error('❌ Sequelize error in getOrders():', err);
     throw err;
   }
 }

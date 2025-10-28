@@ -60,9 +60,6 @@ app.use('/api/v1/onscan', adminuserRoutes);
 app.use('/api/v1/onscan', bloodGroupRoutes);
 app.use('/api/v1/onscan', captainRoutes);
 app.use('/api/v1/onscan', captainTransaxtionRoutes);
-
-
-
 app.use('/api/v1/onscan', thridPartyAPIRoutes);
 
 

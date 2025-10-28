@@ -9,6 +9,7 @@ import {
   softDeleteAdmin,
   restoreAdmin,
   refreshAdminToken,
+  dashboardGlobalSearch,
   dashboard,
   sendOtpToken,
   changePassword,
@@ -202,6 +203,28 @@ export const activateAdmin = async (req, res) => {
   }
 };
 
+
+// Global Dashboard Search
+export const dashboardGlobalSearchCtrl = async (req, res) => {
+  try {
+    const searchTerm = (req.query.query || '').trim(); // ✅ change here
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    if (!searchTerm) return res.sendError("Search term is required", 400);
+
+    const result = await dashboardGlobalSearch({ searchTerm, page, limit });
+
+    if (!result.success) {
+      return res.sendError(result.message, 400);
+    }
+
+    return res.sendSuccess(result.data, result.message);
+  } catch (error) {
+    console.error("Dashboard Global Search Controller Error:", error.message);
+    return res.sendError("Internal Server Error", 500);
+  }
+};
 
 
 export const dashboardAdmin = async (req, res) => {

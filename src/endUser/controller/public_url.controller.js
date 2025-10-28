@@ -253,40 +253,40 @@ const publicUrlController = {
   },
 
   // In your controller
-async updateUrlforCaptain(req, res) {
-  try {
-    const updatedBy  = req.user?.id  ?? req.userAgent?.id  ?? req.admin?.id;
-    const captainId  = req.captain?.id ?? req.body?.captain_id;
-    const { id }     = req.params;
+  async updateUrlforCaptain(req, res) {
+    try {
+      const updatedBy = req.user?.id ?? req.userAgent?.id ?? req.admin?.id;
+      const captainId = req.captain?.id ?? req.body?.captain_id;
+      const { id } = req.params;
 
-    // 1) Fetch the record
-    const publicUrl = await publicUrlService.getPublicUrlById(id);
-    if (!publicUrl || !publicUrl.is_active) {
-      return res.sendError('No active record found for the provided ID', 404);
+      // 1) Fetch the record
+      const publicUrl = await publicUrlService.getPublicUrlById(id);
+      if (!publicUrl || !publicUrl.is_active) {
+        return res.sendError('No active record found for the provided ID', 404);
+      }
+
+      // 2) Check if already assigned
+      if (publicUrl.captain_id) {
+        return res.sendError(
+          `This QR code is already assigned to captain ${publicUrl.captain_id}`,
+          400
+        );
+      }
+
+      // 3) Perform update
+      const updatePayload = { captain_id: captainId, updated_by: updatedBy };
+      const [count, rows] = await publicUrlService.updatePublicUrlbyCaptianid(id, updatePayload);
+
+      if (count === 0) {
+        return res.sendError('Failed to update record', 500);
+      }
+
+      return res.sendSuccess(rows, 'Status updated successfully');
+    } catch (error) {
+      console.error('Update Error:', error);
+      return res.sendError('Internal Server Error', 500, error.message);
     }
-
-    // 2) Check if already assigned
-    if (publicUrl.captain_id) {
-      return res.sendError(
-        `This QR code is already assigned to captain ${publicUrl.captain_id}`,
-        400
-      );
-    }
-
-    // 3) Perform update
-    const updatePayload = { captain_id: captainId, updated_by: updatedBy };
-    const [count, rows]  = await publicUrlService.updatePublicUrlbyCaptianid(id, updatePayload);
-
-    if (count === 0) {
-      return res.sendError('Failed to update record', 500);
-    }
-
-    return res.sendSuccess(rows, 'Status updated successfully');
-  } catch (error) {
-    console.error('Update Error:', error);
-    return res.sendError('Internal Server Error', 500, error.message);
-  }
-},
+  },
 
 
 

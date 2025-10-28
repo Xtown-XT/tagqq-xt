@@ -166,12 +166,12 @@
 
 // services/user.service.js
 import User from '../models/user.model.js';
-import AdminUser from '../../admin_user/models/admin_user.models.js'
-import UserAgent from '../../user_agent/models/user_agent.model.js'
+import AdminUser from '../../admin_user/models/admin_user.models.js';
+import UserAgent from '../../user_agent/models/user_agent.model.js';
 import Publicurl from '../models/public_url.model.js';
 import { Op } from 'sequelize';
-import Partner from '../../user_agent/models/partner.model.js'
-import { createUserInfo } from '../../endUser/service/userConfig.service.js'
+import Partner from '../../user_agent/models/partner.model.js';
+import { createUserInfo } from '../../endUser/service/userConfig.service.js';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
@@ -633,7 +633,6 @@ export const loginUser = async ({ identifier, password }) => {
     username: user.username,
     email: user.email,
     enduser: "true"
-
   };
 };
 

@@ -8,6 +8,10 @@ const Captainconfig = sequelize.define('Captainconfig', {
         primaryKey: true,
         allowNull: false
     },
+       captain_id: {                
+        type: DataTypes.UUID,
+        allowNull: true
+    },
     target: {
         type: DataTypes.INTEGER,
         allowNull: false

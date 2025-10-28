@@ -14,7 +14,7 @@ const ApiKey = sequelize.define('api_keys', {
     },
     name: {
         type: DataTypes.ENUM,
-        values: ["quickekyc","whatapp","smtp", "twillo", "razorpay", "stripe", "ai_agent", "metawhatapp", "phonepe"],
+        values: ["quickekyc","whatapp","smtp", "twillo", "razorpay", "stripe", "ai_agent", "metawhatapp", "phonepe", "vodafone"],
         allowNull: false,
         unique: true,
     },

@@ -118,6 +118,103 @@ export const restoreOrderController = async (req, res) => {
 };
 
 //getall
+// export const orderController = {
+//   async list(req, res) {
+//     try {
+//       const {
+//         includeInactive,
+//         is_active,
+//         status,
+//         partner_id,
+//         view,
+//         order_by,
+//         search,
+//         startDate,
+//         endDate,
+//         page,
+//         limit,
+//         orderBy,
+//         order,
+//         noPagination,
+//         is_master,
+//         export: exportType,
+//         foradmin,
+//         foruseragent,
+//       } = req.query;
+
+//       const pageNum = Math.max(1, Number(page) || 1);
+//       const limitNum = Math.max(1, Number(limit) || 10);
+//       const orderDir = ['asc', 'desc'].includes((order || '').toLowerCase())
+//         ? order.toLowerCase()
+//         : 'asc';
+
+//       const usePagination = noPagination !== 'true' && is_master !== 'true';
+//       const foradminFlag = foradmin === 'true';
+//       const foruseragentFlag = foruseragent === 'true';
+
+
+//       const { rows, count } = await getOrders({
+//         includeInactive,
+//         is_active: is_active === undefined ? undefined : is_active === 'true',
+//         status: status ? status.split(',') : undefined,
+//         partner_id,
+//         order_by,
+//         search,
+//         startDate,
+//         endDate,
+//         view,
+//         page: usePagination ? pageNum : undefined,
+//         limit: usePagination ? limitNum : undefined,
+//         orderBy: orderBy || 'createdAt',
+//         order: orderDir,
+//         userAgent: req.userAgent || null,
+//         isAdmin: Boolean(req.admin),
+//         is_master: is_master === 'true',
+//         foradmin: foradminFlag,
+//         foruseragent: foruseragentFlag,
+//       });
+
+//       const totalPages = usePagination ? Math.ceil(count / limitNum) : 1;
+//       const currentPage = usePagination ? pageNum : 1;
+//       if (exportType === 'pdf') {
+//         const templatePath = 'orders-report.ejs';
+
+//         const data = {
+//           date: new Date().toLocaleDateString(),
+//           totalCount: count,
+//           orders: rows.map(order => ({
+//             order_code: order.order_code || 'N/A',
+//             total_qr: order.no_of_qr_ordered ?? 'N/A',
+//             delivered_qr: order.no_of_qr_delivered ?? 'N/A',
+//             partner_type: order.partner?.partner_type || 'N/A',
+//             partner_name: order.partner?.name || 'N/A',
+//             order_by: order.user_agent?.useragent_name || 'N/A',
+//             status: order.status || 'N/A',
+//             ordered_date: order.createdAt || 'N/A',
+//           }))
+//         };
+
+//         const pdfBuffer = await exportToPdf(templatePath, data);
+
+//         res.setHeader("Content-Type", "application/pdf");
+//         res.setHeader("Content-Disposition", `attachment; filename=orders-${Date.now()}.pdf`);
+//         return res.send(pdfBuffer);
+//       }
+//       return res.sendSuccess(
+//         {
+//           data: rows,
+//           meta: { total: count, totalPages, currentPage },
+//         },
+//         'Orders retrieved successfully'
+//       );
+//     } catch (err) {
+//       console.error('Error in orderController.list():', err);
+//       return res.sendError('Failed to retrieve orders', 500, err.message);
+//     }
+//   },
+// };
+
+
 export const orderController = {
   async list(req, res) {
     try {
@@ -131,8 +228,6 @@ export const orderController = {
         search,
         startDate,
         endDate,
-        page,
-        limit,
         orderBy,
         order,
         noPagination,
@@ -142,17 +237,41 @@ export const orderController = {
         foruseragent,
       } = req.query;
 
-      const pageNum = Math.max(1, Number(page) || 1);
-      const limitNum = Math.max(1, Number(limit) || 10);
+      // ✅ Corrected pagination param handling
+      const pageParam =
+        req.query.page ||
+        req.query.currentPage ||
+        1;
+      const limitParam =
+        req.query.limit ||
+        req.query.pageSize ||
+        req.query.size ||
+        req.query.per_page ||
+        10;
+
+      // ✅ FIXED: use `pageParam` and `limitParam` (not `page` / `limit`)
+      const pageNum = Math.max(1, Number(pageParam) || 1);
+      const limitNum = Math.max(1, Number(limitParam) || 10);
+
+      // ✅ Order direction handling
       const orderDir = ['asc', 'desc'].includes((order || '').toLowerCase())
         ? order.toLowerCase()
         : 'asc';
 
+      // ✅ Pagination flags
       const usePagination = noPagination !== 'true' && is_master !== 'true';
       const foradminFlag = foradmin === 'true';
       const foruseragentFlag = foruseragent === 'true';
 
+      console.log('📦 Pagination params:', {
+        pageNum,
+        limitNum,
+        usePagination,
+        foradminFlag,
+        foruseragentFlag,
+      });
 
+      // ✅ Fetch orders from service
       const { rows, count } = await getOrders({
         includeInactive,
         is_active: is_active === undefined ? undefined : is_active === 'true',
@@ -174,11 +293,13 @@ export const orderController = {
         foruseragent: foruseragentFlag,
       });
 
+      // ✅ Pagination metadata
       const totalPages = usePagination ? Math.ceil(count / limitNum) : 1;
       const currentPage = usePagination ? pageNum : 1;
+
+      // ✅ Export to PDF
       if (exportType === 'pdf') {
         const templatePath = 'orders-report.ejs';
-
         const data = {
           date: new Date().toLocaleDateString(),
           totalCount: count,
@@ -191,24 +312,34 @@ export const orderController = {
             order_by: order.user_agent?.useragent_name || 'N/A',
             status: order.status || 'N/A',
             ordered_date: order.createdAt || 'N/A',
-          }))
+          })),
         };
 
         const pdfBuffer = await exportToPdf(templatePath, data);
-
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", `attachment; filename=orders-${Date.now()}.pdf`);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader(
+          'Content-Disposition',
+          `attachment; filename=orders-${Date.now()}.pdf`
+        );
         return res.send(pdfBuffer);
       }
+
+      // ✅ Success response
       return res.sendSuccess(
         {
           data: rows,
-          meta: { total: count, totalPages, currentPage },
+          meta: {
+            total: count,
+            perPage: limitNum,
+            totalPages,
+            currentPage,
+            returnedCount: rows.length,
+          },
         },
         'Orders retrieved successfully'
       );
     } catch (err) {
-      console.error('Error in orderController.list():', err);
+      console.error('❌ Error in orderController.list():', err);
       return res.sendError('Failed to retrieve orders', 500, err.message);
     }
   },

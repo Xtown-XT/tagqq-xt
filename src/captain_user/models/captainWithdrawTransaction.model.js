@@ -1,6 +1,6 @@
 
 import { DataTypes } from 'sequelize';
-import { sequelize } from '../../db/index.js'; 
+import { sequelize } from '../../db/index.js';
 
 const CaptainWithdrawTransaction = sequelize.define(
   'CaptainWithdrawTransaction',
@@ -15,7 +15,7 @@ const CaptainWithdrawTransaction = sequelize.define(
       allowNull: false,
     },
     sum_points: {
-      type: DataTypes.DECIMAL(10, 2), 
+      type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
       defaultValue: 0.0,
     },
@@ -27,7 +27,7 @@ const CaptainWithdrawTransaction = sequelize.define(
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
     },
-    unit_of_amount:{
+    unit_of_amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: true,
     },
@@ -42,7 +42,7 @@ const CaptainWithdrawTransaction = sequelize.define(
     timestamps: true,
     createdAt: 'created_at',
     updatedAt: 'updated_at',
-    paranoid: true, 
+    paranoid: true,
     deletedAt: 'deleted_at',
   }
 );

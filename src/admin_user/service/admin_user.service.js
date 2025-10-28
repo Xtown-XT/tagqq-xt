@@ -144,7 +144,7 @@ export const getAdminMe = async (adminId) => {
 
 // Admin login
 export const loginAdmin = async ({ identifier, password }) => {
- 
+
   const admin = await Adminuser.findOne({
     where: {
       [Op.or]: [
@@ -154,7 +154,7 @@ export const loginAdmin = async ({ identifier, password }) => {
       ]
     }
   });
-   console.log("Admin result:", admin);
+  console.log("Admin result:", admin);
   if (!admin || !(await verifyPassword(password, admin.admin_password))) {
     const error = new Error('Invalid credentials');
     error.statusCode = 401;
@@ -222,6 +222,147 @@ export const refreshAdminToken = async (refreshToken) => {
   }
 };
 
+// 🔍 Global Dashboard Search
+// export const dashboardGlobalSearch = async (searchTerm) => {
+//   try {
+//     if (!searchTerm || searchTerm.trim() === '') {
+//       throw new Error("Search term is required");
+//     }
+
+//     const likeQuery = { [Op.like]: `%${searchTerm}%` };
+
+//     // 🧑‍💻 Search Users
+//     const users = await User.findAll({
+//       where: {
+//         [Op.or]: [
+//           { username: likeQuery },
+//           { email: likeQuery },
+//           { phone: likeQuery },
+//           { referral_id: likeQuery }
+//         ]
+//       },
+//       attributes: ["id", "username", "email", "phone", "referral_id", "createdAt"],
+//       limit: 10
+//     });
+
+//     // 🤝 Search Partners
+//     const partners = await Partner.findAll({
+//       where: {
+//         [Op.or]: [
+//           { partner_name: likeQuery },
+//           { partner_email: likeQuery },
+//           { partner_phone: likeQuery },
+//           { partner_type: likeQuery }
+//         ]
+//       },
+//       attributes: ["id", "partner_name", "partner_email", "partner_phone", "partner_type", "createdAt"],
+//       limit: 10
+//     });
+
+//     // 🌐 Search Public URLs
+//     const urls = await Publicurl.findAll({
+//       where: {
+//         [Op.or]: [
+//           { order_id: likeQuery },
+//           { user_id: likeQuery },
+//           { status: likeQuery }
+//         ]
+//       },
+//       attributes: ["id", "order_id", "user_id", "status", "createdAt"],
+//       limit: 10
+//     });
+
+//     // 🚗 Search Profiles (e.g., vehicles)
+//     const vehicles = await profile.findAll({
+//       where: {
+//         [Op.or]: [
+//           { docs_name: likeQuery },
+//           { vehicle_number: likeQuery },
+//           { vehicle_category: likeQuery }
+//         ]
+//       },
+//       attributes: ["id", "docs_name", "vehicle_number", "vehicle_category", "createdAt"],
+//       limit: 10
+//     });
+
+//     return {
+//       success: true,
+//       message: "Global search results fetched successfully",
+//       data: {
+//         users,
+//         partners,
+//         urls,
+//         vehicles
+//       }
+//     };
+
+//   } catch (error) {
+//     console.error("🔎 Dashboard Global Search Error:", error);
+//     return { success: false, message: error.message };
+//   }
+// };
+export const dashboardGlobalSearch = async ({ searchTerm, page = 1, limit = 10 }) => {
+  try {
+    searchTerm = (searchTerm || '').trim();
+    if (!searchTerm) throw new Error('Search term is required');
+
+    const offset = (page - 1) * limit;
+    const likeQuery = { [Op.like]: `%${searchTerm}%` };
+
+    const [users, partners, urls, vehicles] = await Promise.all([
+      User.findAll({
+        where: {
+          [Op.or]: [
+            { username: likeQuery },
+            { email: likeQuery },
+            { phone: likeQuery },
+            { referral_id: likeQuery }
+          ]
+        },
+        attributes: ["id", "username", "email", "phone", "referral_id", "createdAt"],
+        limit,
+        offset
+      }),
+
+      Partner.findAll({
+        where: {
+          [Op.or]: [
+            { name: likeQuery },
+            { email: likeQuery },
+            { phone: likeQuery },
+            { partner_type: likeQuery }
+          ]
+        },
+        attributes: ["id", "name", "email", "phone", "partner_type", "createdAt"],
+        limit,
+        offset
+      }),
+
+      Publicurl.findAll({
+        where: {
+          [Op.or]: [{ status: likeQuery }]
+        },
+        attributes: ["id", "order_id", "user_id", "status", "createdAt"],
+        limit,
+        offset
+      }),
+
+      profile.findAll({
+        where: {
+          [Op.or]: [{ docs_name: likeQuery }]
+        },
+        attributes: ["id", "docs_name", "createdAt"],
+        limit,
+        offset
+      })
+    ]);
+
+    return { success: true, message: "Global search results fetched successfully", data: { users, partners, urls, vehicles } };
+  } catch (error) {
+    console.error("Dashboard Global Search Error:", error);
+    return { success: false, message: error.message };
+  }
+};
 
 export const dashboard = async () => {
   try {

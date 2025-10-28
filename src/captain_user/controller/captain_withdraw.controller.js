@@ -116,10 +116,10 @@ export const listCaptainWithdrawTransactionsController = async (req, res) => {
 
 // Export for routing
 export const captainWithdrawController = {
-  create:  createCaptainWithdrawTransactionController,
+  create: createCaptainWithdrawTransactionController,
   getById: getCaptainWithdrawTransactionByIdController,
-  update:  updateCaptainWithdrawTransactionController,
-  delete:  deleteCaptainWithdrawTransactionController,
+  update: updateCaptainWithdrawTransactionController,
+  delete: deleteCaptainWithdrawTransactionController,
   restore: restoreCaptainWithdrawTransactionController,
-  list:    listCaptainWithdrawTransactionsController
+  list: listCaptainWithdrawTransactionsController
 };

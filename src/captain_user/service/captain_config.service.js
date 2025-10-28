@@ -2,6 +2,7 @@ import { sequelize } from '../../db/index.js';
 import { Op } from 'sequelize';
 import Captainconfig from '../models/captain_config.models.js';
 import AdminUser from '../../admin_user/models/admin_user.models.js';
+import CaptainUser from '../models/captain_user.models.js';
 
 if (!Captainconfig.associations?.creator) {
   Captainconfig.belongsTo(AdminUser, {
@@ -16,6 +17,14 @@ if (!Captainconfig.associations?.updater) {
     foreignKey: 'updated_by',
     targetKey: 'id',
     as: 'updater'
+  });
+}
+
+if (!Captainconfig.associations?.captain) {
+  Captainconfig.belongsTo(CaptainUser, {
+    foreignKey: 'captain_id', // make sure this field exists in captain_config table
+    targetKey: 'id',
+    as: 'captain'
   });
 }
 
@@ -129,7 +138,8 @@ export async function getCaptainConfigsService({
     order: [['createdAt', 'DESC']],
     include: [
       { model: AdminUser, as: 'creator', attributes: ['id', 'admin_username'] },
-      { model: AdminUser, as: 'updater', attributes: ['id', 'admin_username'] }
+      { model: AdminUser, as: 'updater', attributes: ['id', 'admin_username'] },
+      { model: CaptainUser, as: 'captain', attributes: ['id', 'name'] }
     ],
     paranoid: !isMaster
   };

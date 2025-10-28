@@ -1,11 +1,11 @@
 import express from 'express';
 import ekycService from '../service/ekyc.service.js';
-import {  authenticate } from '../../middleware/index.js';
+import { authenticate } from '../../middleware/index.js';
 
 const router = express.Router();
 
 // Generate Aadhaar OTP (v2)
-router.post('/generate-otp',  authenticate(['end_user' , 'captain' , 'admin', 'user_agent']), async (req, res) => {
+router.post('/generate-otp', authenticate(['end_user', 'captain', 'admin', 'user_agent']), async (req, res) => {
   try {
     const { id_number } = req.body;
     const result = await ekycService.generateOtp({ id_number });
@@ -16,12 +16,12 @@ router.post('/generate-otp',  authenticate(['end_user' , 'captain' , 'admin', 'u
 });
 
 // Submit Aadhaar OTP (v2)
-router.post('/submit-otp',  authenticate(['end_user', 'captain' , 'admin', 'user_agent']), async (req, res) => {
+router.post('/submit-otp', authenticate(['end_user', 'captain', 'admin', 'user_agent']), async (req, res) => {
   try {
     const { request_id, otp, id_number } = req.body;
     const user_id = req.user?.id || null;
     const captain_id = req.captain?.id || null;
-    const ekycResult = await ekycService.submitOtp({ request_id, otp, user_id , id_number, captain_id});
+    const ekycResult = await ekycService.submitOtp({ request_id, otp, user_id, id_number, captain_id });
     return res.sendSuccess(ekycResult);
   } catch (err) {
     return res.sendError(err.message, err.status || 500);
@@ -52,16 +52,19 @@ router.post(
       const rcData = await ekycService.fetchRcFull({ id_number, user_id, created_by, owner_name });
       return res.sendSuccess(rcData);
     } catch (err) {
-      return res.sendError(err.message, err.status || 500);
+      console.error('❌ Error while fetching RC:', err.response?.data || err.message);
+      const error = new Error(`QuickEkyc RC fetch failed: ${err.response?.data?.message || err.message}`);
+      error.status = err.response?.status || 500;
+      throw error;
     }
   }
 );
 
 
 // in ekyc.router.js
-router.post('/license',  authenticate(['end_user', 'admin', 'user_agent']), async (req, res) => {
+router.post('/license', authenticate(['end_user', 'admin', 'user_agent']), async (req, res) => {
   try {
-    const { id_number, dob } = req.body; 
+    const { id_number, dob } = req.body;
     const user_id = req.user?.id;
     const licenseData = await ekycService.fetchLicense({ id_number, dob, user_id });
     return res.sendSuccess(licenseData);
@@ -76,7 +79,7 @@ router.post(
   async (req, res) => {
     try {
       const { id_number, ifsc } = req.body;
-      const user_id = req.user?.id || null  ;
+      const user_id = req.user?.id || null;
       const captain_id = req.captain?.id || null;
       const bankData = await ekycService.fetchBankVerification({ id_number, ifsc, user_id, captain_id });
       return res.sendSuccess(bankData);
