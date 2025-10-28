@@ -1,5 +1,7 @@
 // controllers/captain_earnings.controller.js
-import { getCaptainTodayEarningsService } from '../service/captain_earnings.sevice.js';
+
+// controllers/captain_earnings.controller.js
+import { getCaptainTodayEarningsService } from '../service/captain_earnings.sevice.js'; // ✅ fixed spelling
 
 export const getCaptainTodayEarningsController = async (req, res) => {
   try {
@@ -9,7 +11,10 @@ export const getCaptainTodayEarningsController = async (req, res) => {
     }
 
     const result = await getCaptainTodayEarningsService(captainId);
-    return res.sendSuccess({ data: result }, 'Captain earnings retrieved successfully');
+    return res.sendSuccess(
+      { data: result },
+      'Captain earnings retrieved successfully'
+    );
   } catch (error) {
     console.error('Error in getCaptainTodayEarningsController:', error);
     return res.sendError(error.message, 500);
