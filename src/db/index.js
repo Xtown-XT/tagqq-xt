@@ -7,49 +7,33 @@
 
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize("tagqq", "ramya", "ramya", {
-  host: "192.168.1.150",
-  port: 3306,
-  dialect: "mysql",
-});
+const sequelize = new Sequelize(
+  process.env.MYSQL_ADDON_DB || process.env.DB_NAME || "tagqq",
+  process.env.MYSQL_ADDON_USER || process.env.DB_USER || "ramya",
+  process.env.MYSQL_ADDON_PASSWORD || process.env.DB_PASSWORD || "ramya",
+  {
+    host: process.env.MYSQL_ADDON_HOST || process.env.DB_HOST || "192.168.1.150",
+    port: process.env.MYSQL_ADDON_PORT || process.env.DB_PORT || 3306,
+    dialect: "mysql",
+    dialectOptions: {
+      connectTimeout: 60000, // 60 seconds
+      ssl: process.env.DB_SSL === 'true' ? {
+        rejectUnauthorized: false
+      } : undefined
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 60000,
+      idle: 10000
+    },
+    logging: process.env.NODE_ENV === 'development' ? console.log : false
+  }
+);
 
 sequelize
   .authenticate()
-  .then(() => console.log("Database is Connected"))
-  .catch((err) => console.error(`Database connection error: ${err}`));
+  .then(() => console.log("✅ Database is Connected"))
+  .catch((err) => console.error(`❌ Database connection error: ${err}`));
 
 export { sequelize };
-     
-
-// import { Sequelize } from "sequelize";
-
-// const sequelize = new Sequelize(
-//   process.env.DB_NAME || "tagqq",
-//   process.env.DB_USER || "ramya",
-//   process.env.DB_PASSWORD || "ramya",
-//   {
-//     host: process.env.DB_HOST || "192.168.1.150",
-//     port: process.env.DB_PORT || 3306,
-//     dialect: "mysql",
-//     dialectOptions: {
-//       connectTimeout: 60000, // 60 seconds
-//       ssl: process.env.DB_SSL === 'true' ? {
-//         rejectUnauthorized: false
-//       } : undefined
-//     },
-//     pool: {
-//       max: 5,
-//       min: 0,
-//       acquire: 60000,
-//       idle: 10000
-//     },
-//     logging: process.env.NODE_ENV === 'development' ? console.log : false
-//   }
-// );
-
-// sequelize
-//   .authenticate()
-//   .then(() => console.log("✅ Database is Connected"))
-//   .catch((err) => console.error(`❌ Database connection error: ${err}`));
-
-// export { sequelize };
