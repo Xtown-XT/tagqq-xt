@@ -11,7 +11,7 @@ import apiLimiter from './middleware/ratelimite.js'
 import bloodGroupRoutes from './bloodgroup/routes/index.js'
 import captainRoutes from './captain_user/routes/index.js'
 import captainTransaxtionRoutes from './captain_user/routes/index.js';
-
+import dotenv from "dotenv"
 
 const app = express();
 
