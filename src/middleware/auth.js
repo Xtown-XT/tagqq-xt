@@ -124,30 +124,37 @@ export const authenticate = (allowedRoles = []) => {
           .json({ status: 'error', message: `Unauthorized: Invalid or expired token - ${ve.message}` });
       }
 
-      // try each allowed role
-      for (const role of allowedRoles) {
-        if (roleHandlers[role]) {
-          try {
-            const { key, value } = await roleHandlers[role](decoded, token);
-            req[key] = value;
-            return next();
-          } catch (err) {
-            // if this role handler throws, log and try next role
-            console.warn(`Role check failed for ${role}:`, err.message);
-            // if it had a statusCode, immediately return that response
-            if (err.statusCode) {
-              return res
-                .status(err.statusCode)
-                .json({ status: 'error', message: err.message });
-            }
-          }
-        }
+      // Check if token role matches any allowed role (case-insensitive)
+      const tokenRole = (decoded.role || '').toLowerCase();
+      const matchingRole = allowedRoles.find(role => role.toLowerCase() === tokenRole);
+      
+      if (!matchingRole) {
+        return res
+          .status(403)
+          .json({ 
+            status: 'error', 
+            message: `Unauthorized: Token role '${decoded.role}' does not match required roles: ${allowedRoles.join(', ')}` 
+          });
       }
 
-      // no handler succeeded
-      return res
-        .status(403)
-        .json({ status: 'error', message: 'Unauthorized: Invalid role or token' });
+      // Use the handler for the matching role
+      const handler = roleHandlers[matchingRole];
+      if (!handler) {
+        return res
+          .status(500)
+          .json({ status: 'error', message: `Server error: No handler for role '${matchingRole}'` });
+      }
+
+      try {
+        const { key, value } = await handler(decoded, token);
+        req[key] = value;
+        return next();
+      } catch (err) {
+        console.error(`Role check failed for ${matchingRole}:`, err.message);
+        return res
+          .status(err.statusCode || 403)
+          .json({ status: 'error', message: err.message });
+      }
 
     } catch (err) {
       console.error('Authentication Middleware Error:', err.message);
