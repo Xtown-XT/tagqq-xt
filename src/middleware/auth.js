@@ -129,9 +129,18 @@ export const authenticate = (allowedRoles = []) => {
           .json({ status: 'error', message: `Unauthorized: Invalid or expired token - ${ve.message}` });
       }
 
-      // Check if token role matches any allowed role (case-insensitive)
-      const tokenRole = (decoded.role || '').toLowerCase();
-      const matchingRole = allowedRoles.find(role => role.toLowerCase() === tokenRole);
+      // Check if token role matches any allowed role (case-insensitive, handles "Super Admin", "Admin", etc.)
+      const tokenRole = (decoded.role || '').toLowerCase().trim();
+      // Check if token role contains "admin" (for "Admin", "Super Admin", etc.)
+      const tokenHasAdminRole = tokenRole.includes('admin');
+      
+      // Find matching role - check exact match first, then check if token has admin role
+      let matchingRole = allowedRoles.find(role => role.toLowerCase() === tokenRole);
+      
+      // If no exact match but token has "admin" in role and route allows "admin", allow it
+      if (!matchingRole && tokenHasAdminRole && allowedRoles.includes('admin')) {
+        matchingRole = 'admin';
+      }
       
       if (!matchingRole) {
         return res

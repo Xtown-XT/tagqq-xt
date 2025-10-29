@@ -154,9 +154,22 @@ export const loginAdmin = async ({ identifier, password }) => {
       ]
     }
   });
-  console.log("Admin result:", admin);
-  if (!admin || !(await verifyPassword(password, admin.admin_password))) {
-    const error = new Error('Invalid credentials');
+  console.log("🔍 Login attempt for identifier:", identifier);
+  console.log("Admin found:", admin ? `Yes (ID: ${admin.id}, Email: ${admin.admin_email}, Username: ${admin.admin_username}, Active: ${admin.is_active})` : "No");
+  
+  if (!admin) {
+    console.error("❌ Admin not found with identifier:", identifier);
+    const error = new Error('Invalid credentials - Admin not found');
+    error.statusCode = 401;
+    throw error;
+  }
+  
+  const isPasswordValid = await verifyPassword(password, admin.admin_password);
+  console.log("🔐 Password verification result:", isPasswordValid);
+  
+  if (!isPasswordValid) {
+    console.error("❌ Password verification failed for:", identifier);
+    const error = new Error('Invalid credentials - Password incorrect');
     error.statusCode = 401;
     throw error;
   }
