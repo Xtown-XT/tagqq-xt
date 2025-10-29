@@ -12,7 +12,7 @@ export const initializeSuperAdmin = async () => {
   const defaultSuperAdmin = {
     admin_username: 'Xtown',
     admin_email: 'xtown@gmail.com',
-    admin_password: await hashPassword('Admin@123'), // Strong default password
+    admin_password: await hashPassword('Admin@123'),
     admin_phone: '9999999999',
     role: 'Super Admin',
     is_active: true,

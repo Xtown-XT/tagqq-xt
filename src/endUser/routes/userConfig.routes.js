@@ -12,7 +12,6 @@ import {
 import {validate, authenticate} from '../../middleware/index.js';
 const router = express.Router();
 
-
 router.post('/userconfig',authenticate(['end_user']), registerUser);                     
 router.get('/userconfig', authenticate(['end_user']),getAll);    
 router.get('/userconfig/me', authenticate(['end_user']), getMyUserConfig);
