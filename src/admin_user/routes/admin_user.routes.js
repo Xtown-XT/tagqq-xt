@@ -32,7 +32,7 @@ import { getDashboardStats } from '../controller/revenue.controller.js';
 const router = express.Router();
 
 // Admin registration and authentication
-router.post('/admins/register', validate(adminRegisterSchema), authenticate(['admin']), registerAdmin);  // Requires admin authentication 
+router.post('/admins/register', validate(adminRegisterSchema), registerAdmin);  // Public registration - no auth required 
 
 router.post('/admins/login', validate(adminLoginSchema), login);
 router.post('/admins/refreshtoken', handleRefreshToken);

@@ -31,8 +31,13 @@ const roleHandlers = {
 
   admin: async (decoded) => {
     const admin = await getAdminMe(decoded.id);
-    if (!admin || !admin.is_active) {
-      const err = new Error('Inactive or missing admin');
+    if (!admin) {
+      const err = new Error(`Admin not found with ID: ${decoded.id}`);
+      err.statusCode = 404;
+      throw err;
+    }
+    if (!admin.is_active) {
+      const err = new Error('Admin account is inactive');
       err.statusCode = 403;
       throw err;
     }
