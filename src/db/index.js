@@ -7,19 +7,19 @@
 
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize(
-  process.env.MYSQL_ADDON_DB || process.env.DB_NAME || "tagqq",
-  process.env.MYSQL_ADDON_USER || process.env.DB_USER || "ramya",
-  process.env.MYSQL_ADDON_PASSWORD || process.env.DB_PASSWORD || "ramya",
-  {
-    host: process.env.MYSQL_ADDON_HOST || process.env.DB_HOST || "192.168.1.150",
-    port: process.env.MYSQL_ADDON_PORT || process.env.DB_PORT || 3306,
+// Try using the connection URI first (recommended for Clever Cloud)
+let sequelize;
+if (process.env.MYSQL_ADDON_URI) {
+  console.log("🔗 Using MYSQL_ADDON_URI for connection");
+  sequelize = new Sequelize(process.env.MYSQL_ADDON_URI, {
     dialect: "mysql",
     dialectOptions: {
-      connectTimeout: 60000, // 60 seconds
-      ssl: process.env.DB_SSL === 'true' ? {
+      connectTimeout: 60000,
+      acquireTimeout: 60000,
+      timeout: 60000,
+      ssl: {
         rejectUnauthorized: false
-      } : undefined
+      }
     },
     pool: {
       max: 5,
@@ -28,8 +28,35 @@ const sequelize = new Sequelize(
       idle: 10000
     },
     logging: process.env.NODE_ENV === 'development' ? console.log : false
-  }
-);
+  });
+} else {
+  console.log("🔧 Using individual environment variables for connection");
+  sequelize = new Sequelize(
+    process.env.MYSQL_ADDON_DB || process.env.DB_NAME || "tagqq",
+    process.env.MYSQL_ADDON_USER || process.env.DB_USER || "ramya",
+    process.env.MYSQL_ADDON_PASSWORD || process.env.DB_PASSWORD || "ramya",
+    {
+      host: process.env.MYSQL_ADDON_HOST || process.env.DB_HOST || "192.168.1.150",
+      port: process.env.MYSQL_ADDON_PORT || process.env.DB_PORT || 3306,
+      dialect: "mysql",
+      dialectOptions: {
+        connectTimeout: 60000,
+        acquireTimeout: 60000,
+        timeout: 60000,
+        ssl: {
+          rejectUnauthorized: false
+        }
+      },
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 60000,
+        idle: 10000
+      },
+      logging: process.env.NODE_ENV === 'development' ? console.log : false
+    }
+  );
+}
 
 sequelize
   .authenticate()

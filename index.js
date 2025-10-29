@@ -1,8 +1,10 @@
-import app from './src/index.js';
 import dotenv from 'dotenv';
+import app from './src/index.js';
 import { sequelize } from './src/db/index.js';
 import { initializeSuperAdmin } from './src/utils/admin_user_init.js';
 
+// Load environment variables FIRST
+dotenv.config();
 
 const port = process.env.PORT || 5000;
 
