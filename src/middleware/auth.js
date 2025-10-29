@@ -96,21 +96,32 @@ const roleHandlers = {
 export const authenticate = (allowedRoles = []) => {
   return async (req, res, next) => {
     try {
+      // Check if JWT_SECRET is configured
+      if (!JWT_SECRET) {
+        console.error('❌ JWT_SECRET is not configured in environment variables');
+        return res
+          .status(500)
+          .json({ status: 'error', message: 'Server configuration error: JWT_SECRET missing' });
+      }
+
       const authHeader = req.headers.authorization;
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('❌ Auth header missing or invalid format');
         return res
           .status(401)
-          .json({ status: 'error', message: 'Unauthorized: No token provided' });
+          .json({ status: 'error', message: 'Unauthorized: No token provided. Use format: Authorization: Bearer <token>' });
       }
 
       const token = authHeader.replace('Bearer ', '').trim();
       let decoded;
       try {
         decoded = jwt.verify(token, JWT_SECRET);
+        console.log('✅ Token verified successfully for user:', decoded.username || decoded.id, 'role:', decoded.role);
       } catch (ve) {
+        console.error('❌ Token verification failed:', ve.message);
         return res
           .status(401)
-          .json({ status: 'error', message: 'Unauthorized: Invalid or expired token' });
+          .json({ status: 'error', message: `Unauthorized: Invalid or expired token - ${ve.message}` });
       }
 
       // try each allowed role

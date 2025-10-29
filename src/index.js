@@ -63,8 +63,6 @@ app.use('/api/v1/onscan', captainTransaxtionRoutes);
 app.use('/api/v1/onscan', thridPartyAPIRoutes);
 
 
-
-
 app.use((req, res) => {
   return res.sendError('Route not found', 404);       
 });
