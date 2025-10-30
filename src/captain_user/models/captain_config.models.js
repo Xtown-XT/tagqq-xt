@@ -37,11 +37,11 @@ const Captainconfig = sequelize.define('Captainconfig', {
         allowNull: true
     },
     created_by: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.UUID,
         allowNull: false
     },
     updated_by: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.UUID,
         allowNull: false
     }
 }, {
