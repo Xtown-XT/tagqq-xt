@@ -14,7 +14,7 @@ const OrderTracking = sequelize.define('order_tracking', {
   },
   payment_id: {
     type: DataTypes.UUID,
-    allowNull: false,
+    allowNull: true, // allow nulls, needed for ON DELETE SET NULL
     references: {
       model: Payment,
       key: 'id'
